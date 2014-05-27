@@ -12,10 +12,12 @@
     $user = get_user($_SESSION['user_id'], $mysql);
     if (!$user) header("Location: index.php");
 
-    $logged_out_at = $user['logged_out_at'];
-    if (!isset($_SESSION['logged_in_at']) || $_SESSION['logged_in_at'] < $logged_out_at) {
-        session_destroy();
-        header('Location: index.php');
+    if (isset($user['logged_out_at'])) {
+        $logged_out_at = $user['logged_out_at'];
+        if (!isset($_SESSION['logged_in_at']) || $_SESSION['logged_in_at'] < $logged_out_at) {
+            session_destroy();
+            header('Location: index.php');
+        }
     }
 ?>
 

@@ -1,5 +1,16 @@
 <?php
 
+/*
+
+Before you begin, you'll need to add the following table to your database.
+
+CREATE TABLE users (
+    clef_id VARCHAR(256),
+    name VARCHAR(256),
+    logged_out_at INTEGER
+);
+*/
+
 define('DB_USER', 'root');
 define('DB_PASSWORD', 'root');
 define('DB_HOST', 'localhost');

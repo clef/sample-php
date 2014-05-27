@@ -1,15 +1,5 @@
 <?php
 
-/*
-
-Before you begin, you'll need to add the following table to your database.
-
-CREATE TABLE users (
-    clef_id VARCHAR(256),
-    name VARCHAR(256)
-);
-*/
-
 require_once('config.php');
 
 if (!session_id())
