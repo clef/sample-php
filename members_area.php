@@ -1,30 +1,21 @@
 <?php
+    require('config.php');
+
     session_start();
-    $DB_USER = "root";
-    $DB_PASSWORD = "root";
-    $DB_HOST = "localhost";
-    $DB_NAME = "clef-test";
 
     // don't let those filthy nonmembers in here
     if(!isset($_SESSION["user_id"])) {
         header("Location: index.php");
-    } 
+    }
 
-    $uid = $_SESSION['user_id'];
+    require('mysql.php');
+    $user = get_user($_SESSION['user_id'], $mysql);
+    if (!$user) header("Location: index.php");
 
-    $mysql = mysqli_connect($DB_HOST, $DB_USER, $DB_PASSWORD);
-    $query = "SELECT logged_out_at FROM {$DB_NAME}.users WHERE clef_id='{$uid}';";
-    
-    if($response = mysqli_query($mysql, $query)) {
-        $rows = mysqli_fetch_assoc($response);
-
-        $logged_out_at = $rows['logged_out_at'];
-
-        if(!isset($_SESSION['logged_in_at']) || $_SESSION['logged_in_at'] < $logged_out_at) { // or if the user is logged out with Clef
-            session_destroy(); // log the user out on this site
-
-            header("Location: index.php");
-        }
+    $logged_out_at = $user['logged_out_at'];
+    if (!isset($_SESSION['logged_in_at']) || $_SESSION['logged_in_at'] < $logged_out_at) {
+        session_destroy();
+        header('Location: index.php');
     }
 ?>
 
