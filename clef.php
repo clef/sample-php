@@ -87,7 +87,7 @@ if (isset($_GET["code"]) && $_GET["code"] != "") {
 
                             // if the user is new, register them 
                             if(sizeof($rows) == 0) {
-                                $query = "INSERT INTO clef-test.users (clef_id, name) VALUES ('{$clef_id}', '{$name}');";
+                                $query = "INSERT INTO {$DB_NAME}.users (clef_id, name) VALUES ('{$clef_id}', '{$name}');";
 
                                 $response = mysqli_query($mysql, $query);
                             }
