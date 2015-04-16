@@ -2,10 +2,23 @@
 
 require_once('config.php');
 
-if (!session_id())
+function validate_state($state) {
+    $is_valid = isset($_SESSION['state']) && strlen($_SESSION['state']) > 0 && $_SESSION['state'] == $state;
+    unset($_SESSION['state']);
+    if (!$is_valid) {
+        header('HTTP/1.0 403 Forbidden');
+        echo "The state parameter didn't match what was passed in to the Clef button.";
+        exit;
+    }
+    return $is_valid;
+}
+
+if (!session_id()) {
     session_start();
+}
 
 if (isset($_GET["code"]) && $_GET["code"] != "") {
+    validate_state($_GET["state"]);
     $code = $_GET["code"];
     $postdata = http_build_query(
         array(
