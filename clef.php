@@ -76,21 +76,6 @@ if (isset($_GET["code"]) && $_GET["code"] != "") {
                             session_start();
 
                         $clef_id = $result['id'];
-
-                        $_SESSION['name']     = $result['first_name'].' '.$result['last_name'];
-                        $_SESSION['email']    = $result['email'];
-                        $_SESSION['user_id']  = $clef_id;
-                        $_SESSION['logged_in_at'] = time();  // timestamp in unix time
-
-                        require_once('mysql.php');
-
-                        $user = get_user($clef_id, $mysql);
-                        if (!$user) {
-                            insert_user($clef_id, $result['first_name'], $mysql);
-                        }
-
-                        // send them to the member's area!
-                        header("Location: members_area.php");
                     }
                 } else {
                     echo "Log in with Clef failed, please try again.";
@@ -105,4 +90,16 @@ if (isset($_GET["code"]) && $_GET["code"] != "") {
     }
 }
 ?>
+
+<html>
+<head>
+<title>PHP Sample</title>
+</head>
+<body>
+    <script>
+        window.opener.handleClefCallback({ clefID: <?php echo $clef_id; ?>});
+        window.close();
+    </script>
+</body>
+</html>
 

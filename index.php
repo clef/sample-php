@@ -28,7 +28,14 @@ $state = generate_state_parameter();
                 class='clef-button' 
                 data-app-id='<?php echo APP_ID ?>' 
                 data-redirect-url='http://localhost:8888/clef.php'
-                data-state='<?php echo $state ?>'>
+                data-state='<?php echo $state ?>'
+                data-popup='true'>
+        </script>
+
+        <script>
+            window.handleClefCallback = function(user) {
+                alert(user.clefID);
+            };
         </script>
     </body>
 </html>
