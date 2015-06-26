@@ -36,7 +36,7 @@ Once you've set up the Clef button, you need to be able to handle the OAuth hand
 
 Then at the route you created for the OAuth callback, access the `code` URL parameter and exchange it for user information. 
 
-Before exchanging the `code` for user information, you first need to verify the `state` parameter sent to the callback to make sure it's the same one as the one you set in the button. (You can find implementations of the <code><a href="/clef.php#L5-L14" target="_blank">is_valid_state</a></code> and <code><a href="/index.php#L8-L19" target="_blank">generate_state_parameter</a></code> functions in in `app.py`.) 
+Before exchanging the `code` for user information, you first need to verify the `state` parameter sent to the callback to make sure it's the same one as the one you set in the button. (You can find implementations of the <code><a href="/clef.php#L5-L14" target="_blank">validate_state</a></code> and <code><a href="/index.php#L8-L19" target="_blank">generate_state_parameter</a></code> functions in `clef.php` and `index.php`.) 
 
 ```php
 <?php
