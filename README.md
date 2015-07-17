@@ -32,7 +32,12 @@ Set the `data-redirect-url` to the URL in your app where you will complete the O
 *See the code in [action](/index.php#L27-L32) or read more [here](http://docs.getclef.com/v1.0/docs/adding-the-clef-button).*<br>
 
 ### Completing the OAuth handshake
-Once you've set up the Clef button, you need to be able to handle the OAuth handshake. This is what lets you retrieve information about a user after they authenticate with Clef. 
+Once you've set up the Clef button, you need to be able to handle the OAuth handshake. This is what lets you retrieve information about a user after they authenticate with Clef. The easiest way to do this is to use the [Clef API wrapper for PHP](https://github.com/clef-php), which you can install via `Composer` or by manually including the files.
+
+To use it, pass your `app_id` and `app_secret` to the initializer:
+
+    \Clef\Clef::initialize(APP_ID, APP_SECRET);
+
 
 Then at the route you created for the OAuth callback, access the `code` URL parameter and exchange it for user information. 
 
@@ -41,84 +46,46 @@ Before exchanging the `code` for user information, you first need to verify the 
 ```php
 <?php
 require_once('config.php');
+require_once('vendor/autoload.php');
+
 if (!session_id()) {
     session_start();
 }
 
 if (isset($_GET["code"]) && $_GET["code"] != "") {
     validate_state($_GET["state"]);
-    $code = $_GET["code"];
-    $postdata = http_build_query(
-        array(
-            'code' => $code,
-            'app_id' => APP_ID,
-            'app_secret' => APP_SECRET
-        )
-    );
-    $opts = array('http' =>
-        array(
-            'method'  => 'POST',
-            'header'  => 'Content-type: application/x-www-form-urlencoded',
-            'content' => $postdata
-        )
-    );
-    // get oauth code for the handshake
-    $context  = stream_context_create($opts);
-    $response = file_get_contents(CLEF_BASE_URL."authorize", false, $context);
-    if($response) {
-        $response = json_decode($response, true);
-        // if there's an error, Clef's API will report it
-        if(!isset($response['error'])) {
-            $access_token = $response['access_token'];
-            $opts = array('http' =>
-                array(
-                    'method'  => 'GET'
-                )
-            );
-            $url = CLEF_BASE_URL."info?access_token=".$access_token;
-            // exchange the oauth token for the user's info
-            $context  = stream_context_create($opts);
-            $response = file_get_contents($url, false, $context);
-            if($response) {
-                $response = json_decode($response, true);
-                // again, make sure nothing went wrong
-                if(!isset($response['error'])) {
-                    $result = $response['info'];
-                    // reset the user's session
-                    if (isset($result['id'])&&($result['id']!='')) {
-                        //remove all the variables in the session
-                        session_unset();
-                        // destroy the session
-                        session_destroy();
-                        if (!session_id())
-                            session_start();
-                        $clef_id = $result['id'];
-                        $_SESSION['name']     = $result['first_name'].' '.$result['last_name'];
-                        $_SESSION['email']    = $result['email'];
-                        $_SESSION['user_id']  = $clef_id;
-                        $_SESSION['logged_in_at'] = time();  // timestamp in unix time
-                        require_once('mysql.php');
-                        $user = get_user($clef_id, $mysql);
-                        if (!$user) {
-                            insert_user($clef_id, $result['first_name'], $mysql);
-                        }
-                        // send them to the member's area!
-                        header("Location: members_area.php");
-                    }
-                } else {
-                    echo "Log in with Clef failed, please try again.";
-                }
+    \Clef\Clef::initialize(APP_ID, APP_SECRET);
+    try {
+        $response = \Clef\Clef::get_login_information($_GET["code"]);
+        $result = $response->info;
+        // reset the user's session
+        if (isset($result->id) && ($result->id != '')) {
+            //remove all the variables in the session
+            session_unset();
+            // destroy the session
+            session_destroy();
+            if (!session_id())
+                session_start();
+            $clef_id = $result->id;
+            $_SESSION['name']     = $result->first_name .' '. $result->last_name;
+            $_SESSION['email']    = $result->email;
+            $_SESSION['user_id']  = $clef_id;
+            $_SESSION['logged_in_at'] = time();  // timestamp in unix time
+            require_once('mysql.php');
+            $user = get_user($clef_id, $mysql);
+            if (!$user) {
+                insert_user($clef_id, $result->first_name, $mysql);
             }
-        } else {
-            echo "Log in with Clef failed, please try again.";
+            // send them to the member's area!
+            header("Location: members_area.php");
         }
-    } else {
-        echo "Log in with Clef failed, please try again.";
+    } catch (Exception $e) {
+       echo "Login with Clef failed: " . $e->getMessage();
     }
 }
 ?>
 ```
-*See the code in [action](/clef.php#L1-L107) or read more [here](http://docs.getclef.com/v1.0/docs/authenticating-users).*<br>
+*See the code in [action](https://github.com/clef/sample-php/blob/master/clef.php#L24-L27) or read more [here](http://docs.getclef.com/v1.0/docs/authenticating-users).*<br>
 
 ### Logging users out 
 Logout with Clef allows users to have complete control over their authentication sessions. Instead of users individually logging out of each site, they log out once with their phone and are automatically logged out of every site they used Clef to log into.
@@ -140,32 +107,22 @@ Every time a user logs out of Clef on their phone, Clef will send a `POST` to yo
 ```php
 <?php
     require('config.php');
+    require_once('vendor/autoload.php');
+    
     if(isset($_POST['logout_token'])) {
-        $postdata = http_build_query(
-            array(
-                'logout_token' => $_REQUEST['logout_token'],
-                'app_id' => APP_ID,
-                'app_secret' => APP_SECRET
-            )
-        );
-        $opts = array('http' =>
-            array(
-                'method'  => 'POST',
-                'header'  => 'Content-type: application/x-www-form-urlencoded',
-                'content' => $postdata
-            )
-        );
-        $context  = stream_context_create($opts);
-        $response = file_get_contents(CLEF_BASE_URL."logout", false, $context);
-        $response = json_decode($response, true);
-        if (isset($response['success']) && isset($response['clef_id'])) {
+        \Clef\Clef::initialize(APP_ID, APP_SECRET);
+        try {
+            $clef_id = \Clef\Clef::get_logout_information($_POST["logout_token"]);
             require('mysql.php');
-            update_logged_out_at($response['clef_id'], time(), $mysql);
+            update_logged_out_at($clef_id, time(), $mysql);
+            die(json_encode(array('success' => true)));
+        } catch (Exception $e) {
+           die(json_encode(array('error' => $e->getMessage())));
         }
     }
 ?>
 ```
-*See the code in [action](/logout_hook.php#L1-L32) or read more [here](http://docs.getclef.com/v1.0/docs/handling-the-logout-webhook).*<br>
+*See the code in [action](/logout_hook.php#L9) or read more [here](http://docs.getclef.com/v1.0/docs/handling-the-logout-webhook).*<br>
 
 You'll want to make sure you have a `logged_out_at` attribute on your `User` model. Also, don't forget to specify this URL as the `logout_hook` in your Clef application settings so Clef knows where to notify you.
 
