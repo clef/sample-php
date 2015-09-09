@@ -32,7 +32,7 @@ Set the `data-redirect-url` to the URL in your app where you will complete the O
 *See the code in [action](/index.php#L27-L32) or read more [here](http://docs.getclef.com/v1.0/docs/adding-the-clef-button).*<br>
 
 ### Completing the OAuth handshake
-Once you've set up the Clef button, you need to be able to handle the OAuth handshake. This is what lets you retrieve information about a user after they authenticate with Clef. The easiest way to do this is to use the [Clef API wrapper for PHP](https://github.com/clef-php), which you can install via `Composer` or by manually including the files.
+Once you've set up the Clef button, you need to be able to handle the OAuth handshake. This is what lets you retrieve information about a user after they authenticate with Clef. The easiest way to do this is to use the [Clef API wrapper for PHP](https://github.com/clef/clef-php), which you can install via `Composer` or by manually including the files.
 
 To use it, pass your `app_id` and `app_secret` to the initializer:
 
