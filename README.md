@@ -161,8 +161,8 @@ $ git clone https://github.com/clef/sample-php.git
 Then configure your local database and run on localhost:8000.
 ```
 # create clef database with MySQL command line
-mysql > CREATE DATABASE clef;
-mysql > USE clef;
+mysql > CREATE DATABASE clef_test;
+mysql > USE clef_test;
 mysql > CREATE TABLE users (clef_id VARCHAR(32), name VARCHAR(64));
 mysql > exit;
 
