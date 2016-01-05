@@ -5,11 +5,12 @@ require_once('vendor/autoload.php');
 
 function validate_state($state) {
     $is_valid = isset($_SESSION['state']) && strlen($_SESSION['state']) > 0 && $_SESSION['state'] == $state;
-    unset($_SESSION['state']);
     if (!$is_valid) {
         header('HTTP/1.0 403 Forbidden');
         echo "The state parameter didn't match what was passed in to the Clef button.";
         exit;
+    } else {
+        unset($_SESSION['state']);
     }
     return $is_valid;
 }

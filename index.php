@@ -6,9 +6,13 @@ function base64url_encode($data) {
 }
 
 function generate_state_parameter() {
-    $state = base64url_encode(openssl_random_pseudo_bytes(32));
-    $_SESSION['state'] = $state;
-    return $state;
+    if (isset($_SESSION['state'])) {
+        return $_SESSION['state'];
+    } else {
+        $state = base64url_encode(openssl_random_pseudo_bytes(32));
+        $_SESSION['state'] = $state;
+        return $state;
+    }
 }
 
 if (!session_id()) {
