@@ -1,6 +1,5 @@
 # Clef + PHP
 ![license:mit](https://img.shields.io/badge/license-mit-blue.svg)
-![build:passing](https://img.shields.io/travis/joyent/node/v0.6.svg)
 
 ## Getting started
 Clef is secure two-factor auth without passwords. With the wave of their phone, users can log in to your site — it's like :sparkles: magic :sparkles:! 
