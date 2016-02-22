@@ -20,9 +20,16 @@ if (!session_id()) {
 }
 
 if (isset($_GET["code"]) && $_GET["code"] != "") {
-    validate_state($_GET["state"]);
+    /* validate_state($_GET["state"]); */
 
-    \Clef\Clef::initialize(APP_ID, APP_SECRET);
+    $configuration = new \Clef\Configuration(array(
+        "id" => APP_ID,
+        "secret" => APP_SECRET,
+        "keypair" => "file:///Users/jessepollak/clefy/clef/common/tests/fixtures/test.pem",
+        "api_base" => "http://arya.dev:5000/api"
+    ));
+    \Clef\Clef::configure($configuration);
+
     try {
         $response = \Clef\Clef::get_login_information($_GET["code"]);
         $result = $response->info;
@@ -38,20 +45,33 @@ if (isset($_GET["code"]) && $_GET["code"] != "") {
 
             $clef_id = $result->id;
 
-            $_SESSION['name']     = $result->first_name .' '. $result->last_name;
-            $_SESSION['email']    = $result->email;
             $_SESSION['user_id']  = $clef_id;
+            $_SESSION['user_public_key'] = $result->public_key->bundle;
+
+            $payload = array(
+                "nonce" => bin2hex(openssl_random_pseudo_bytes(16)),
+                "clef_id" => $clef_id,
+                "redirect_url" => 'http://localhost:8888/verify.php',
+                "session_id" => $_REQUEST['session_id']
+            );
+
+            // We store the payload in the browser session so we can verify the nonce later
+            $_SESSION['clef_payload'] = $payload;
             $_SESSION['logged_in_at'] = time();  // timestamp in unix time
 
-            require_once('mysql.php');
+            $signed_payload = \Clef\Clef::sign_login_payload($payload);
+            header("Location: http://arya.dev:5000/api/v1/validate?payload=" . \Clef\Clef::encode_payload($signed_payload));
+            die();
 
-            $user = get_user($clef_id, $mysql);
-            if (!$user) {
-                insert_user($clef_id, $result->first_name, $mysql);
-            }
+            /* require_once('mysql.php'); */
+
+            /* $user = get_user($clef_id, $mysql); */
+            /* if (!$user) { */
+            /*     insert_user($clef_id, $result->first_name, $mysql); */
+            /* } */
 
             // send them to the member's area!
-            header("Location: members_area.php");
+            /* header("Location: members_area.php"); */
         }
     } catch (Exception $e) {
        echo "Login with Clef failed: " . $e->getMessage();
