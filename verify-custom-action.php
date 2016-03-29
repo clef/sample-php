@@ -16,16 +16,17 @@ $user_pubkey_str = $user_pubkey_info->bundle;
 $user_pubkey_res = openssl_get_publickey($user_pubkey_str);
 
 if ($user_pubkey_res) {
-  print $user_pubkey_str;
   $verify_result = openssl_verify(
     $payload_data,
-    $payload_sigs->user->data,
-    $user_pubkey_res
+    base64_decode($payload_sigs->user->signature),
+    $user_pubkey_res,
+    split("-", $payload_sigs->user->type)[1]
   );
 
-  if ($verify_result == 1) { print "WE ALL GOOD"; }
-  elseif ($verify_result == 0) { print "GOTDAMIN IT"; }
-  elseif ($verify_result == -1) { print "err occc"; }
+  if ($verify_result == 1) { print "We're all good!"; }
+  elseif ($verify_result == 0) { print "Gosh darn it; got a failure."; }
+  elseif ($verify_result == -1) { print "An unknown error occurred."; }
+
 } else {
   print "Got an invalid public key for the user.";
 }
