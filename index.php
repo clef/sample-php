@@ -31,7 +31,7 @@ $state = generate_state_parameter();
         <script src='http://arya.dev:5000/static/dist/js/v3/clef.js'
                 class='clef-button'
                 data-app-id='<?php echo APP_ID ?>'
-                data-redirect-url='http://localhost:8888/clef.php'
+                data-redirect-url='http://localhost:8888/clef-confirm-action.php'
                 data-state='<?php echo $state ?>'>
         </script>
     </body>
