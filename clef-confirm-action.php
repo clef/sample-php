@@ -26,7 +26,7 @@ if (isset($_GET["code"]) && $_GET["code"] != "") {
     $configuration = new \Clef\Configuration(array(
         "id" => APP_ID,
         "secret" => APP_SECRET,
-        "keypair" => "./keys/dv.pem",
+        "keypair" => "file://./keys/dv.pem",
         "passphrase" => "betafinex",
         "api_base" => "http://clef.tk/api/"
       ));
