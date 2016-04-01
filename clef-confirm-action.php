@@ -26,9 +26,9 @@ if (isset($_GET["code"]) && $_GET["code"] != "") {
     $configuration = new \Clef\Configuration(array(
         "id" => APP_ID,
         "secret" => APP_SECRET,
-        "keypair" => "file:///Users/jackyalcine/clef/common/tests/fixtures/test.pem",
+        "keypair" => "./keys/dv.pem",
         "passphrase" => "betafinex",
-        "api_base" => "http://arya.dev:5000/api"
+        "api_base" => "http://clef.tk/api/"
       ));
 
     \Clef\Clef::configure($configuration);
@@ -53,7 +53,7 @@ if (isset($_GET["code"]) && $_GET["code"] != "") {
         $payload = array(
             "nonce" => bin2hex(openssl_random_pseudo_bytes(16)),
             "clef_id" => $clef_id,
-            "redirect_url" => 'http://localhost:8888/verify-custom-action.php',
+            "redirect_url" => gethostname() . '/verify-custom-action.php',
             "session_id" => $_REQUEST["session_id"],
             "type" => "withdrawal",
             "description" => "You requested to withdraw " . mt_rand(5, 50) . " BTC from your account."
@@ -64,7 +64,7 @@ if (isset($_GET["code"]) && $_GET["code"] != "") {
         $_SESSION['logged_in_at'] = time();  // timestamp in unix time
 
         $signed_payload = \Clef\Clef::sign_custom_payload($payload);
-        header("Location: http://arya.dev:5000/api/v1/validate?payload=" . \Clef\Clef::encode_payload($signed_payload));
+        header("Location: http://clef.tk/api/v1/validate?payload=" . \Clef\Clef::encode_payload($signed_payload));
         die();
     }
 }
