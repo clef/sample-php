@@ -1,5 +1,14 @@
 {
     "require": {
-        "clef/clef-php": "1.0.1"
+        "clef/clef-php": "*"
+    },
+    "repositories": [
+      {
+        "type": "path",
+        "url": "../clef-php"
+      }
+    ],
+    "require-dev": {
+        "heroku/heroku-buildpack-php": "^100.0"
     }
 }
