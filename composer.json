@@ -1,13 +1,7 @@
 {
     "require": {
-        "clef/clef-php": "*"
+        "clef/clef-php": "dev-custom-actions"
     },
-    "repositories": [
-      {
-        "type": "path",
-        "url": "../clef-php"
-      }
-    ],
     "require-dev": {
         "heroku/heroku-buildpack-php": "^100.0"
     }
