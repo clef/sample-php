@@ -11,6 +11,6 @@ $payload_json = json_decode($payload_str);
 $payload_data = $payload_json->payload_json;
 $payload_sigs = $payload_json->signatures;
 
-print "Got signatures for " . join(", ", array_keys($payload_json->signatures));
+print "Got signatures for " . join(", ", array_keys(get_object_vars($payload_json->signatures)));
 
 ?>
