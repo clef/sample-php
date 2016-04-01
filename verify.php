@@ -12,7 +12,8 @@ if (isset($_GET["payload"]) && $_GET["payload"] != "") {
     $configuration = new \Clef\Configuration(array(
         "id" => APP_ID,
         "secret" => APP_SECRET,
-        "keypair" => "file:///Users/jessepollak/clefy/clef/common/tests/fixtures/test.pem",
+        "keypair" => "file:///Users/jackyalcine/clef/common/tests/fixtures/test.pem",
+        "passphrase" => "betafinex",
         "api_base" => "http://arya.dev:5000/api"
     ));
     \Clef\Clef::configure($configuration);

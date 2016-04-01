@@ -25,17 +25,18 @@ if (isset($_GET["code"]) && $_GET["code"] != "") {
     $configuration = new \Clef\Configuration(array(
         "id" => APP_ID,
         "secret" => APP_SECRET,
-        "keypair" => "file:///Users/jessepollak/clefy/clef/common/tests/fixtures/test.pem",
+        "keypair" => "file:///Users/jackyalcine/clef/common/tests/fixtures/test.pem",
+        "passphrase" => "betafinex",
         "api_base" => "http://arya.dev:5000/api"
     ));
     \Clef\Clef::configure($configuration);
 
     try {
         $response = \Clef\Clef::get_login_information($_GET["code"]);
-        $result = $response->info;
+        $result = $response["info"];
 
         // reset the user's session
-        if (isset($result->id) && ($result->id != '')) {
+        if (isset($result["id"]) && ($result["id"] != '')) {
             //remove all the variables in the session
             session_unset();
             // destroy the session
@@ -43,10 +44,10 @@ if (isset($_GET["code"]) && $_GET["code"] != "") {
             if (!session_id())
                 session_start();
 
-            $clef_id = $result->id;
+            $clef_id = $result["id"];
 
             $_SESSION['user_id']  = $clef_id;
-            $_SESSION['user_public_key'] = $result->public_key->bundle;
+            $_SESSION['user_public_key'] = $result["public_key"]["bundle"];
 
             $payload = array(
                 "nonce" => bin2hex(openssl_random_pseudo_bytes(16)),
