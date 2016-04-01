@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/clef/clef-php.git",
-                "reference": "b0cd5a89c08590c229abc3a5ff3c7e6965f9d617"
+                "reference": "ae560d5ad01991d9d5d39957ec5a59dd06b25f5b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/clef/clef-php/zipball/b0cd5a89c08590c229abc3a5ff3c7e6965f9d617",
-                "reference": "b0cd5a89c08590c229abc3a5ff3c7e6965f9d617",
+                "url": "https://api.github.com/repos/clef/clef-php/zipball/ae560d5ad01991d9d5d39957ec5a59dd06b25f5b",
+                "reference": "ae560d5ad01991d9d5d39957ec5a59dd06b25f5b",
                 "shasum": ""
             },
             "require": {
@@ -53,7 +53,7 @@
                 "clef",
                 "two factor"
             ],
-            "time": "2016-03-30 22:44:39"
+            "time": "2016-04-01 20:15:29"
         },
         {
             "name": "rmccue/requests",
