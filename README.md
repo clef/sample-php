@@ -172,7 +172,7 @@ $ php -S localhost:8000
 You can find our most up-to-date documentation at [http://docs.getclef.com](http://docs.getclef.com/). It covers additional topics like customizing the Clef button and testing your integration.
 
 ## Support
-Have a question or just want to chat? Send an email to [support@getclef.com](mailto: support@getclef.com) or join our community Slack channel :point_right: [http://community.getclef.com](http://community.getclef.com).
+Have a question or just want to chat? Send an email to [support@getclef.com](mailto: support@getclef.com).
 
 We're always around, but we do an official Q&A every Friday from 10am to noon PST :) — would love to see you there! 
 
